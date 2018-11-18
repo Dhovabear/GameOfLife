@@ -55,3 +55,12 @@ bool Grid::isCellEmpty(int x, int y){
 
     SDL_SetRenderDrawColor(&tRendu , 255 , 255 , 255 , 255);//On remet la couleur blanche
 }
+
+bool Grid::setCell(int x , int y , int state){
+    if((x < *m_size && y < *m_size) && (x>0 && y>0) && (state == 1 || state == 0)){
+        m_gridCells[x][y] = state;
+        return true;
+    }else{
+        return false;
+    }
+}

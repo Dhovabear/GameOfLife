@@ -14,6 +14,7 @@ class Grid
 
         bool isCellEmpty(int x , int y);
         void draw(SDL_Renderer &tRendu);
+        bool setCell(int x , int y , int state);
 
     protected:
 
