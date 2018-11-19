@@ -69,6 +69,7 @@ bool Grid::isCellEmpty(int x, int y){
 bool Grid::setCell(int x , int y , int state){
     if((x < *m_size && y < *m_size) && (x>0 && y>0) && (state == 1 || state == 0)){
         m_gridCells[x][y] = state;
+        std::cout << "Cell added to x:" << x << " y:" << y << std::endl;
         return true;
     }else{
         return false;
@@ -86,7 +87,7 @@ bool Grid::setTmpCell(int x , int y , int state){
 
 bool Grid::applyTmp(){
     for(int i = 0 ; i < *m_size ; i++){
-            for(int j = 0 ; i < *m_size ; i++){
+            for(int j = 0 ; j < *m_size ; j++){
                 m_gridCells[i][j] = m_tmpGrid[i][j] ;
             }
     }
