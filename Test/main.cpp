@@ -52,6 +52,7 @@ int main(int argc , char *argv[])
     grille->setCell(10 ,10 , 1);
     grille->setCell(11 , 10 , 1);
     grille->setCell(12,10,1);
+    grille->setCell(13,10,1);
 
     //Boucle Principale
 
@@ -65,7 +66,6 @@ int main(int argc , char *argv[])
         }
 
         //On supprime la grille temporaire
-        grille->clearTmp();
         //alreadyComptuedCells.erase(alreadyComptuedCells.begin() , alreadyComptuedCells.end());
 
         //on rafraichit la liste des cases a traiter
@@ -122,7 +122,7 @@ int main(int argc , char *argv[])
                             mainVois++;
                         if(voisins == 3 || voisins == 2 ){
                             grille->setTmpCell( i + k , i+j , 1);
-
+                            std::cout << "yolo" << std::endl;
                         }else{
                             grille->setTmpCell(i+k , i+j , 0);
                         }
