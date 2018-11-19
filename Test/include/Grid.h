@@ -19,7 +19,9 @@ class Grid
 
         bool setTmpCell( int x , int y , int state);
         bool applyTmp();
+
         bool clearTmp();
+        bool clearGrid();
 
     protected:
 

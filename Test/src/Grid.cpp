@@ -99,4 +99,14 @@ bool Grid::clearTmp(){
             m_tmpGrid[i][j] = 0;
         }
     }
+    return true;
+}
+
+bool Grid::clearGrid(){
+    for(int i = 0 ; i < *m_size ; i++){
+        for(int j = 0 ; j < *m_size ; j++){
+            m_gridCells[i][j] = 0;
+        }
+    }
+    return true;
 }

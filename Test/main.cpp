@@ -28,7 +28,7 @@ int main(int argc , char *argv[])
 
     Cellule *cell = new Cellule();
 
-    grille->setCell(10 ,10 , 1);
+
 
 
     //Initialisation de la SDL
@@ -48,6 +48,10 @@ int main(int argc , char *argv[])
 
     //Custom Classes Ini
     grille = new Grid(nbrCases , 600 , 600);
+    grille->clearGrid();
+    grille->setCell(10 ,10 , 1);
+    grille->setCell(11 , 10 , 1);
+    grille->setCell(12,10,1);
 
     //Boucle Principale
 
@@ -62,7 +66,7 @@ int main(int argc , char *argv[])
 
         //On supprime la grille temporaire
         grille->clearTmp();
-        alreadyComptuedCells.erase(alreadyComptuedCells.begin() , alreadyComptuedCells.end());
+        //alreadyComptuedCells.erase(alreadyComptuedCells.begin() , alreadyComptuedCells.end());
 
         //on rafraichit la liste des cases a traiter
 
@@ -71,6 +75,7 @@ int main(int argc , char *argv[])
                 if(!grille->isCellEmpty(i , j)){
                     cell->xPos = i;
                     cell->yPos = j;
+                    std::cout << "cellule a la pos x: " << i << " y: " << j << std::endl;
                     cellInGrid.push_back(*cell);
                 }
             }
@@ -78,6 +83,7 @@ int main(int argc , char *argv[])
 
         for(int i = 0 ; i < cellInGrid.size() ; i++){
             //PArtie CALCUL
+            std::cout << "it" << std::endl;
             int mainVois = 0;
             for(int j = -1; j < 2 ; j ++){ //y
                 for(int k = -1; k < 2 ; k++ ){//x
@@ -111,10 +117,12 @@ int main(int argc , char *argv[])
                     if(!grille->isCellEmpty(cellInGrid[i].xPos + k -1  , cellInGrid[i].yPos + j -1)){
                         voisins ++;
                     }
+
                     if(!grille->isCellEmpty(cellInGrid[i].xPos+k , cellInGrid[i].yPos+j)){
                             mainVois++;
                         if(voisins == 3 || voisins == 2 ){
                             grille->setTmpCell( i + k , i+j , 1);
+
                         }else{
                             grille->setTmpCell(i+k , i+j , 0);
                         }
@@ -137,6 +145,7 @@ int main(int argc , char *argv[])
         }
 
         grille->applyTmp();
+        grille->clearTmp();
         cellInGrid.erase(cellInGrid.begin() , cellInGrid.end());
         //On fait un rendu
         SDL_RenderClear(rendu);
