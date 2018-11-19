@@ -16,6 +16,11 @@ Grid::Grid(int NbrCases , int xSize , int ySize)
         m_gridCells[i] = new int[NbrCases];
     }
 
+    m_tmpGrid = new int*[NbrCases];
+    for(int i = 0 ; i < NbrCases ; i++){
+        m_tmpGrid[i] = new int[NbrCases];
+    }
+
     //ctor
 }
 
@@ -25,6 +30,11 @@ Grid::~Grid()
         delete [] m_gridCells[i];
     }
     delete [] m_gridCells;
+
+    for(int i = 0; i < *m_size ; i++){
+        delete [] m_tmpGrid[i];
+    }
+    delete [] m_tmpGrid;
 
     delete m_wHeight;
     delete m_wWidth;
@@ -62,5 +72,31 @@ bool Grid::setCell(int x , int y , int state){
         return true;
     }else{
         return false;
+    }
+}
+
+bool Grid::setTmpCell(int x , int y , int state){
+    if((x< *m_size && y < *m_size) && (x>0 && y >0) && (state == 1 || state == 0)){
+        m_tmpGrid[x][y] = state;
+        return true;
+    }else{
+        return false;
+    }
+}
+
+bool Grid::applyTmp(){
+    for(int i = 0 ; i < *m_size ; i++){
+            for(int j = 0 ; i < *m_size ; i++){
+                m_gridCells[i][j] = m_tmpGrid[i][j] ;
+            }
+    }
+    return true;
+}
+
+bool Grid::clearTmp(){
+    for(int i = 0 ; i < *m_size ; i++){
+        for(int j = 0 ; j < *m_size ; j++){
+            m_tmpGrid[i][j] = 0;
+        }
     }
 }

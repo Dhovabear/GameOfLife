@@ -21,21 +21,14 @@ int main(int argc , char *argv[])
     Grid *grille;
     bool terminer = false;
 
-    int nbrCases = 4;
-
-    std::vector<Cellule> activeCells(0); // répertorie les cellules a traiter au début de l'update
-    std::vector<Cellule> inactiveCells(0);// ici on stockera les cellules a désactiver
+    int nbrCases = 100;
 
     std::vector<Cellule> cellInGrid(0);
+    std::vector<Cellule> alreadyComptuedCells(0);
 
-    Cellule *cel1 = new Cellule();
-    cel1->xPos = 5;
-    cel1->yPos = 5;
-    activeCells.push_back(*cel1);
-    cel1->xPos = 2;
-    cel1->yPos = 1;
-    activeCells.push_back(*cel1);
+    Cellule *cell = new Cellule();
 
+    grille->setCell(10 ,10 , 1);
 
 
     //Initialisation de la SDL
@@ -56,10 +49,6 @@ int main(int argc , char *argv[])
     //Custom Classes Ini
     grille = new Grid(nbrCases , 600 , 600);
 
-    for(int i = 0; i < activeCells.size() ; i++){
-            std::cout << "Cellule " << i << " : x=" << activeCells[i].xPos << "  y=" << activeCells[i].yPos << std::endl;
-    }
-
     //Boucle Principale
 
     while(!terminer){
@@ -71,45 +60,83 @@ int main(int argc , char *argv[])
             terminer = true;
         }
 
+        //On supprime la grille temporaire
+        grille->clearTmp();
+        alreadyComptuedCells.erase(alreadyComptuedCells.begin() , alreadyComptuedCells.end());
+
         //on rafraichit la liste des cases a traiter
+
+        for(int i = 0; i < nbrCases ; i++){
+            for(int j = 0; j < nbrCases ; j++){
+                if(!grille->isCellEmpty(i , j)){
+                    cell->xPos = i;
+                    cell->yPos = j;
+                    cellInGrid.push_back(*cell);
+                }
+            }
+        }
 
         for(int i = 0 ; i < cellInGrid.size() ; i++){
             //PArtie CALCUL
+            int mainVois = 0;
+            for(int j = -1; j < 2 ; j ++){ //y
+                for(int k = -1; k < 2 ; k++ ){//x
+                    if(j == 0 && k == 0){
+                        continue;
+                    }
 
-        }
+                    int voisins = 0;
+
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k  , cellInGrid[i].yPos + j -1)){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k +1  , cellInGrid[i].yPos + j -1)){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k +1 , cellInGrid[i].yPos + j )){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k +1  , cellInGrid[i].yPos + j +1)){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k  , cellInGrid[i].yPos + j +1 )){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k -1  , cellInGrid[i].yPos + j +1)){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k -1 , cellInGrid[i].yPos + j )){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos + k -1  , cellInGrid[i].yPos + j -1)){
+                        voisins ++;
+                    }
+                    if(!grille->isCellEmpty(cellInGrid[i].xPos+k , cellInGrid[i].yPos+j)){
+                            mainVois++;
+                        if(voisins == 3 || voisins == 2 ){
+                            grille->setTmpCell( i + k , i+j , 1);
+                        }else{
+                            grille->setTmpCell(i+k , i+j , 0);
+                        }
+                    }else{
+                        if(voisins == 3){
+                            grille->setTmpCell(i+k , i+j , 1);
+                        }
+                    }
 
 
-
-
-
-
-
-        //inactive cells
-        for(int i = 0; i < inactiveCells.size(); i++){
-            if(inactiveCells[i].xPos > nbrCases -1 ||inactiveCells[i].yPos > nbrCases-1){//on supprime les èlèments du tableau qui pourrait faire bugger
-                inactiveCells.erase(inactiveCells.begin()+i , inactiveCells.begin()+i+1);
-                std::cout << "Erased inactive !" << std::endl;
-            }else{
-                grille->setCell(inactiveCells[i].xPos , inactiveCells[i].yPos , 0); //ici on désactive les case qui doivent lètre
+                }
             }
-        }
 
-        //activesCells
-        //cellsToDraw.erase(cellsToDraw.begin() , cellsToDraw.end()); // on efface la liste a aff
-        for(int i = 0; i < activeCells.size(); i++ ){
-            if(activeCells[i].xPos > nbrCases-1 || activeCells[i].yPos > nbrCases-1){ // si la condition est vrai alors on hors des imites et on delete
-                activeCells.erase(activeCells.begin()+ i , activeCells.begin()+i+1);
-                std::cout << "Erased Active!" << std::endl;
+            if(mainVois == 2 || mainVois == 3){
+                grille->setTmpCell(cellInGrid[i].xPos , cellInGrid[i].yPos , 1);
             }else{
-                grille->setCell(activeCells[i].xPos , activeCells[i].yPos , 1);
-                //cel1->xPos = activeCells[i].xPos;
-                //cel1->yPos = activeCells[i].yPos;
-                //cellsToDraw.push_back(*cel1);
+                grille->setTmpCell(cellInGrid[i].xPos , cellInGrid[i].yPos , 0);
             }
 
-
         }
 
+        grille->applyTmp();
         cellInGrid.erase(cellInGrid.begin() , cellInGrid.end());
         //On fait un rendu
         SDL_RenderClear(rendu);
@@ -126,19 +153,15 @@ int main(int argc , char *argv[])
                     SDL_RenderFillRect(rendu , &rectangle);
 
                     //on prévoit la prochaine boucle en enregistrant les cases coloriés
-                    cel1->xPos = activeCells[i].xPos;
-                    cel1->yPos = activeCells[i].yPos;
-                    cellInGrid.push_back(*cel1);
+
                 }
             }
         }
         grille->draw(*rendu); // on dessine la grille
         SDL_RenderPresent(rendu);
+        SDL_Delay(500);
     }
 
-    for(int i = 0; i < activeCells.size() ; i++){
-            std::cout << "Cellule " << i << " : x=" << activeCells[i].xPos << "  y=" << activeCells[i].yPos << std::endl;
-    }
 
     //On détruit les pointeurs
     delete grille;

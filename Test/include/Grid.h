@@ -14,13 +14,19 @@ class Grid
 
         bool isCellEmpty(int x , int y);
         void draw(SDL_Renderer &tRendu);
+
         bool setCell(int x , int y , int state);
+
+        bool setTmpCell( int x , int y , int state);
+        bool applyTmp();
+        bool clearTmp();
 
     protected:
 
     private:
         int *m_size;
         int** m_gridCells;
+        int** m_tmpGrid;
         int *m_wWidth;
         int *m_wHeight;
 
